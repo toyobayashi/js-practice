@@ -1,0 +1,22 @@
+{
+  "name": "js-practice",
+  "version": "1.0.0",
+  "description": "Just practice",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/toyobayashi/js-practice.git"
+  },
+  "keywords": [
+    "node"
+  ],
+  "author": "toyobayashi",
+  "license": "MIT",
+  "homepage": "https://github.com/toyobayashi/js-practice#readme",
+  "devDependencies": {
+    "mocha": "^5.1.0"
+  }
+}
