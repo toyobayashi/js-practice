@@ -9,8 +9,22 @@
     PROCESS_UNIQUE[i] = Math.floor(Math.random() * 256);
   }
 
-  function createObjectIdBuffer(time) {
-    time = time || ~~(Date.now() / 1000);
+  return function generateObjectId(obj) {
+    if (typeof obj === 'string' && obj.length === 24 && /^[0-9][a-f][A-F]$/.test(obj)) return obj;
+
+    var i = 0;
+    var hex = '';
+
+    if (typeof obj === 'string' && obj.length === 12) {
+      var result = '';
+      for (i = 0; i < obj.length; i++) {
+        hex = (obj.charCodeAt(i) & 0xff).toString(16);
+        result += hex.length === 1 ? ('0' + hex) : hex;
+      }
+      return result;
+    }
+
+    var time = typeof obj === 'number' ? obj : ~~(Date.now() / 1000);
     var buffer = new Uint8Array(12);
 
     buffer[3] = time & 0xff;
@@ -31,31 +45,10 @@
     index = (index + 1) % 0xffffff;
 
     var result = '';
-
-    for (var i = 0; i < buffer.length; i++) {
-      var hex = buffer[i].toString(16);
+    for (i = 0; i < buffer.length; i++) {
+      hex = buffer[i].toString(16);
       result += hex.length === 1 ? ('0' + hex) : hex;
     }
-
     return result;
-  }
-
-  return function generateObjectId(obj) {
-    if (typeof obj === 'number') {
-      return createObjectIdBuffer(obj);
-    }
-    if (typeof obj === 'string' && obj.length === 12) {
-      var result = '';
-      for (var i = 0; i < obj.length; i++) {
-        var hex = (obj.charCodeAt(i) & 0xff).toString(16);
-        result += hex.length === 1 ? ('0' + hex) : hex;
-      }
-      return result;
-    }
-    if (typeof obj === 'string' && obj.length === 24 && /^[0-9][a-f][A-F]$/.test(obj)) {
-      return obj;
-    }
-    
-    return createObjectIdBuffer();
   };
 }));
