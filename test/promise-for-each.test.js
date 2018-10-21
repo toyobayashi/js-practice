@@ -2,18 +2,20 @@ const { describe, it } = require('mocha')
 const assert = require('assert')
 const { promiseForEach } = require('..')
 
+const TIMEOUT = 200
+
 describe('@promiseForEach', () => {
   it('# promiseForEach(number)', async function () {
     let res = await promiseForEach(3, (value, index) => {
       return new Promise((resolve, reject) => {
         setTimeout(() => {
           // console.log('    ' + value)
-          assert.ok(index === value)
+          assert.equal(index, value, 'value: ' + value)
           resolve(index)
-        }, 50);
+        }, TIMEOUT);
       })
     })
-    assert.ok(res === void 0)
+    assert.ok(res === 2, 'res: ' + JSON.stringify(res))
   })
 
   it('# promiseForEach(object)', async function () {
@@ -24,10 +26,10 @@ describe('@promiseForEach', () => {
           // console.log('    ' + value)
           assert.strictEqual(test[key], value)
           resolve(value)
-        }, 50);
+        }, TIMEOUT);
       })
     })
-    assert.ok(res === void 0)
+    assert.ok(res === 456, 'res: ' + res)
   })
 
   it('# promiseForEach(array)', async function () {
@@ -38,10 +40,10 @@ describe('@promiseForEach', () => {
           // console.log('    ' + value)
           assert.strictEqual(test[index], value)
           resolve(value)
-        }, 50);
+        }, TIMEOUT);
       })
     })
-    assert.ok(res === void 0)
+    assert.ok(res === 666)
   })
 
   it('# promiseForEach(error)', async function () {
@@ -53,11 +55,11 @@ describe('@promiseForEach', () => {
             // console.log('    ' + value)
             assert.strictEqual(test[index], value)
             reject(new Error('123'))
-          }, 50);
+          }, TIMEOUT);
         })
       })
     } catch(err) {
-      assert.ok(err.constructor === Error)
+      assert.ok(err.message === '123')
     }
   })
 })
