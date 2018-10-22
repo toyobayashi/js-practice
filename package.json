@@ -4,7 +4,8 @@
   "description": "Just practice",
   "main": "index.js",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "test:array": "mocha ./test/array.test.js"
   },
   "repository": {
     "type": "git",
