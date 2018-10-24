@@ -168,25 +168,39 @@ function $and(o, condition) {
   return true;
 }
 
-function objectArrayFind(arr, query, projection) {
+function objectArrayFind(arr, query, projection, sort) {
   var result = [];
   for (var i = 0; i < arr.length; i++) {
     var o = arr[i];
 
     if (_and(o, query)) {
       var doc = deepCopy(o);
-      if (isObject(projection) && Object.keys(projection) !== 0) {
-        if (projection._id === void 0) {
-          projection._id = 1;
-        }
+      if (isObject(projection) && Object.keys(projection).length !== 0) {
+        var mode = -1;
         var newDoc = {};
         for (var key in projection) {
           if (projection[key] !== 0 && projection[key] !== 1) throw new Error('Projection value must be 0 or 1.');
-          if (projection[key]) {
-            newDoc[key] = doc[key];
+          if (mode === -1) {
+            mode = projection[key];
+            if (mode === 1) {
+              if (projection._id === undefined) {
+                projection._id = 1;
+              }
+            }
+          }
+          if (projection[key] !== mode) throw new Error('Projection cannot have a mix of inclusion and exclusion.');
+
+          if (mode === 0) {
+            delete doc[key]
+          } else {
+            newDoc[key] = doc[key]
           }
         }
-        result.push(newDoc);
+        if (mode === 0) {
+          result.push(doc);
+        } else {
+          result.push(newDoc);
+        }
       } else {
         result.push(doc);
       }
